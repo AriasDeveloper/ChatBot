@@ -1,21 +1,35 @@
-const { makeWASocket, useMultiFileAuthState } = require('@whiskeysockets/baileys');
+const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { Boom } = require('@hapi/boom');
 const pino = require('pino');
+const qrcode = require('qrcode-terminal'); // Lo usaremos para forzar el dibujo del QR
 
 async function iniciarBot() {
-    // Esto guarda la sesión para que no tengas que escanear el QR cada vez que reinicies
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
     
     const sock = makeWASocket({
         auth: state,
-        logger: pino({ level: 'silent' }) // Silencia los logs innecesarios para ver el QR limpio
+        logger: pino({ level: 'silent' })
     });
 
     sock.ev.on('creds.update', saveCreds);
 
-    // Evento de conexión para ver el estado y el Código QR
+    // Manejar conexión y mostrar código QR
     sock.ev.on('connection.update', (update) => {
-        const { connection } = update;
-        if (connection === 'open') {
+        const { connection, lastDisconnect, qr } = update;
+        
+        // Si hay un código QR disponible, lo imprimimos en la terminal
+        if (qr) {
+            console.log('Escanea este código QR con tu WhatsApp:');
+            qrcode.generate(qr, { small: true });
+        }
+
+        if (connection === 'close') {
+            const shouldReconnect = (lastDisconnect?.error instanceof Boom)?.output?.statusCode !== DisconnectReason.loggedOut;
+            console.log('Conexión cerrada. ¿Reconectando?: ', shouldReconnect);
+            if (shouldReconnect) {
+                iniciarBot();
+            }
+        } else if (connection === 'open') {
             console.log('¡Bot conectado exitosamente a WhatsApp!');
         }
     });
@@ -30,7 +44,6 @@ async function iniciarBot() {
 
         console.log(`Mensaje recibido de ${numeroRemitente}: ${textoMensaje}`);
 
-        // Responde automáticamente si te escriben "hola"
         if (textoMensaje && textoMensaje.toLowerCase() === 'hola') {
             await sock.sendMessage(numeroRemitente, { text: '¡Hola! Estoy vivo y corriendo desde GitHub Codespaces 🤖' });
         }
