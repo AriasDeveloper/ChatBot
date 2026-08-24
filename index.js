@@ -54,8 +54,16 @@ async function iniciarBot() {
         if (!m.message || m.key.fromMe) return;
         
         const remitente = m.key.remoteJid;
+
+        // 🛑 FILTRO DE SEGURIDAD: Si el mensaje viene de un grupo, lo ignoramos de inmediato
+        if (remitente.endsWith('@g.us')) {
+            return;
+        }
+
         const texto = (m.message.conversation || m.message.extendedTextMessage?.text || '').trim();
         const textoLower = texto.toLowerCase();
+
+        // ... el resto de tu código sigue exactamente igual ...
 
         // 1. COMANDO GLOBAL: 'ariasoff' apaga el bot para este usuario
         if (textoLower === 'ariasoff') {
