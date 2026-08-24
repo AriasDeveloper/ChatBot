@@ -6,7 +6,7 @@ const qrcode = require('qrcode-terminal');
 // Memoria temporal para guardar el estado de cada usuario
 const usuariosEstado = {};
 
-const MENU_FAQ_TEXTO = `¿Tienes alguna otra duda o deseas consultar algo más? Selecciona una opción:\n\n*1.* ¿Cuáles son los precios o tarifas?\n*2.* ¿Cuánto se tarda un proyecto?\n*3.* ¿Qué debo entregar para empezar?\n*4.* ¿Hay garantías?\n*5.* Hablar directamente con un especialista (Humano)\n\n\n(Escribe ariasoff si quieres cerrar el Bot)`;
+const MENU_FAQ_TEXTO = `🤖 ¿Tienes alguna otra duda o deseas consultar algo más? Selecciona una opción:\n\n*1.* ¿Cuáles son los precios o tarifas?\n*2.* ¿Cuánto se tarda un proyecto?\n*3.* ¿Qué debo entregar para empezar?\n*4.* ¿Hay garantías?\n*5.* Hablar directamente con un especialista (Humano)\n\n\n(Escribe ariasoff si quieres cerrar el Bot)`;
 
 async function iniciarBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
@@ -81,7 +81,7 @@ async function iniciarBot() {
                 estado.nombre = texto;
                 estado.paso = 'ESPERANDO_CORREO';
                 await sock.sendMessage(remitente, { 
-                    text: `Mucho gusto, *${estado.nombre}*.\n\n¿Cuál es tu correo electrónico?\n\n\n(Escribe ariasoff si quieres cerrar el Bot)` 
+                    text: `🤖 Mucho gusto, *${estado.nombre}*.\n\n¿Cuál es tu correo electrónico?\n\n\n(Escribe ariasoff si quieres cerrar el Bot)` 
                 });
                 break;
 
@@ -89,7 +89,7 @@ async function iniciarBot() {
                 estado.correo = texto;
                 estado.paso = 'MENU_PRINCIPAL';
                 await sock.sendMessage(remitente, { 
-                    text: `¡Gracias! Hemos registrado tu correo.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n\n\n(Escribe ariasoff si quieres cerrar el Bot)` 
+                    text: `🤖 ¡Gracias! Hemos registrado tu correo.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n\n\n(Escribe ariasoff si quieres cerrar el Bot)` 
                 });
                 break;
 
@@ -142,7 +142,7 @@ async function iniciarBot() {
 
             default:
                 estado.paso = 'MENU_PRINCIPAL';
-                await sock.sendMessage(remitente, { text: 'Escribe *1*, *2* o *3* para ver el menú principal.\n\n\n(Escribe ariasoff si quieres cerrar el Bot)' });
+                await sock.sendMessage(remitente, { text: '🤖 Escribe *1*, *2* o *3* para ver el menú principal.\n\n\n(Escribe ariasoff si quieres cerrar el Bot)' });
                 break;
         }
     });
