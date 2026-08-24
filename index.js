@@ -2,6 +2,20 @@ const { makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whis
 const { Boom } = require('@hapi/boom');
 const pino = require('pino');
 const qrcode = require('qrcode-terminal');
+const express = require('express'); // <-- Servidor web para mantener vivo a Render 24/7
+
+// --- SERVIDOR WEB EXPRESS PARA RENDER ---
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('¡El bot de AriasDeveloper está activo y corriendo 24/7!');
+});
+
+app.listen(PORT, () => {
+    console.log(`Servidor web corriendo en el puerto ${PORT}`);
+});
+// ----------------------------------------
 
 // Memoria temporal para guardar el estado de cada usuario
 const usuariosEstado = {};
@@ -13,7 +27,7 @@ async function iniciarBot() {
     
     const sock = makeWASocket({
         auth: state,
-        logger: pino({ level: 'silent' })
+        logger: pino({ level: 'silent' }) // <-- 'silent' oculta todos esos reportes técnicos de Baileys
     });
 
     sock.ev.on('creds.update', saveCreds);
@@ -43,7 +57,7 @@ async function iniciarBot() {
         const texto = (m.message.conversation || m.message.extendedTextMessage?.text || '').trim();
         const textoLower = texto.toLowerCase();
 
-        // 1. COMANDO GLOBAL: 'ariasoff' en cualquier momento apaga el bot para este usuario
+        // 1. COMANDO GLOBAL: 'ariasoff' apaga el bot para este usuario
         if (textoLower === 'ariasoff') {
             usuariosEstado[remitente] = { paso: 'APAGADO' };
             await sock.sendMessage(remitente, { 
@@ -52,7 +66,7 @@ async function iniciarBot() {
             return;
         }
 
-        // Si el usuario está apagado o en pausa, solo reacciona si escriben 'ariasbot'
+        // Si el usuario está apagado o en pausa, solo reacciona a 'ariasbot'
         if (usuariosEstado[remitente] && (usuariosEstado[remitente].paso === 'APAGADO' || usuariosEstado[remitente].paso === 'PAUSADO')) {
             if (textoLower === 'ariasbot') {
                 usuariosEstado[remitente] = { paso: 'MENU_PRINCIPAL', nombre: 'Usuario', correo: '' };
@@ -60,10 +74,10 @@ async function iniciarBot() {
                     text: '🟢 ¡Hola de nuevo! El bot ha sido reactivado.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n\n\n(Escribe ariasoff si quieres cerrar el Bot)' 
                 });
             }
-            return; // Ignora cualquier otro mensaje mientras esté pausado/apagado
+            return; 
         }
 
-        // Si el usuario no tiene estado, iniciamos la bienvenida
+        // Si el usuario no tiene estado, iniciamos bienvenida
         if (!usuariosEstado[remitente]) {
             usuariosEstado[remitente] = { paso: 'ESPERANDO_NOMBRE', flujo: '' };
             await sock.sendMessage(remitente, { 
@@ -74,9 +88,7 @@ async function iniciarBot() {
 
         const estado = usuariosEstado[remitente];
 
-        // MÁQUINA DE ESTADOS
         switch (estado.paso) {
-            
             case 'ESPERANDO_NOMBRE':
                 estado.nombre = texto;
                 estado.paso = 'ESPERANDO_CORREO';
@@ -110,7 +122,6 @@ async function iniciarBot() {
                     await sock.sendMessage(remitente, { 
                         text: '💰 Pueden variar un poco según las promociones actuales y algunos requerimientos específicos del cliente, aunque el promedio estándar ronda entre los *10-35 Usdt*.\n\n\n(Escribe ariasoff si quieres cerrar el Bot)' 
                     });
-                    // Envía la respuesta y de inmediato despliega el menú de nuevo sin pedir números previos
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '2') {
                     await sock.sendMessage(remitente, { 
@@ -128,7 +139,6 @@ async function iniciarBot() {
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '5') {
-                    // Pasa al estado de pausa / atención humana
                     estado.paso = 'PAUSADO';
                     await sock.sendMessage(remitente, { 
                         text: '👥 Hemos tomado nota de tu caso y un especialista se pondrá en contacto contigo.\n\nEl bot ha finalizado su atención automática. Si deseas reactivarlo más adelante, escribe *ariasbot*.' 
