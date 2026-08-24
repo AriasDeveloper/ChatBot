@@ -67,7 +67,7 @@ async function iniciarBot() {
         if (!usuariosEstado[remitente]) {
             usuariosEstado[remitente] = { paso: 'ESPERANDO_NOMBRE', flujo: '' };
             await sock.sendMessage(remitente, { 
-                text: '🤖 *¡Bienvenido a AriasDeveloper!* Estamos aquí para ayudarte con todas las necesidades de Software y tecnología.\n\n¿Cuál es tu nombre?' 
+                text: '🤖 *¡Bienvenido a AriasDeveloper!* Estamos aquí para ayudarte con todas las necesidades de Software y tecnología.\n\n¿Cuál es tu nombre?\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
             });
             return;
         }
@@ -81,7 +81,7 @@ async function iniciarBot() {
                 estado.nombre = texto;
                 estado.paso = 'ESPERANDO_CORREO';
                 await sock.sendMessage(remitente, { 
-                    text: `Mucho gusto, *${estado.nombre}*.\n\n¿Cuál es tu correo electrónico?` 
+                    text: `Mucho gusto, *${estado.nombre}*.\n\n¿Cuál es tu correo electrónico?\n(🔴 Escribe ariasoff si quieres cerrar el Bot)` 
                 });
                 break;
 
@@ -89,7 +89,7 @@ async function iniciarBot() {
                 estado.correo = texto;
                 estado.paso = 'MENU_PRINCIPAL';
                 await sock.sendMessage(remitente, { 
-                    text: `¡Gracias! Hemos registrado tu correo.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales` 
+                    text: `¡Gracias! Hemos registrado tu correo.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n(🔴 Escribe ariasoff si quieres cerrar el Bot)` 
                 });
                 break;
 
@@ -100,7 +100,7 @@ async function iniciarBot() {
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else {
                     await sock.sendMessage(remitente, { 
-                        text: '⚠️ Por favor, responde con un número válido: *1*, *2* o *3*.' 
+                        text: '⚠️ Por favor, responde con un número válido: *1*, *2* o *3*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                 }
                 break;
@@ -108,23 +108,23 @@ async function iniciarBot() {
             case 'MENU_FAQ':
                 if (texto === '1') {
                     await sock.sendMessage(remitente, { 
-                        text: '💰 Pueden variar un poco según las promociones actuales y algunos requerimientos específicos del cliente, aunque el promedio estándar ronda entre los *10-35 Usdt*.' 
+                        text: '💰 Pueden variar un poco según las promociones actuales y algunos requerimientos específicos del cliente, aunque el promedio estándar ronda entre los *10-35 Usdt*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     // Envía la respuesta y de inmediato despliega el menú de nuevo sin pedir números previos
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '2') {
                     await sock.sendMessage(remitente, { 
-                        text: '⏱️ Todos los proyectos se gestionan bajo estricta planificación y se estima una duración de *7 días*.' 
+                        text: '⏱️ Todos los proyectos se gestionan bajo estricta planificación y se estima una duración de *7 días*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '3') {
                     await sock.sendMessage(remitente, { 
-                        text: '📁 De tener imágenes, vídeos o audios alusivos a tu negocio o marca nos ayudaría muchísimo a crear el proyecto exactamente a tu estilo y huella, aunque estamos 100% dispuesto a ayudarte y ofrecerte nuestras habilidades de diseño y personalización.' 
+                        text: '📁 De tener imágenes, vídeos o audios alusivos a tu negocio o marca nos ayudaría muchísimo a crear el proyecto exactamente a tu estilo y huella, aunque estamos 100% dispuesto a ayudarte y ofrecerte nuestras habilidades de diseño y personalización.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '4') {
                     await sock.sendMessage(remitente, { 
-                        text: '🛡️ Todos nuestros proyectos incluyen garantías y nos hacemos 100% responsables de su gestión, corrección de errores y su funcionamiento para su mayor comodidad.' 
+                        text: '🛡️ Todos nuestros proyectos incluyen garantías y nos hacemos 100% responsables de su gestión, corrección de errores y su funcionamiento para su mayor comodidad.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '5') {
@@ -135,14 +135,14 @@ async function iniciarBot() {
                     });
                 } else {
                     await sock.sendMessage(remitente, { 
-                        text: '⚠️ Selecciona un número válido del *1* al *5*.' 
+                        text: '⚠️ Selecciona un número válido del *1* al *5*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                 }
                 break;
 
             default:
                 estado.paso = 'MENU_PRINCIPAL';
-                await sock.sendMessage(remitente, { text: 'Escribe *1*, *2* o *3* para ver el menú principal.' });
+                await sock.sendMessage(remitente, { text: 'Escribe *1*, *2* o *3* para ver el menú principal.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' });
                 break;
         }
     });
