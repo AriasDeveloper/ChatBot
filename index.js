@@ -6,7 +6,7 @@ const qrcode = require('qrcode-terminal');
 // Memoria temporal para guardar el estado de cada usuario
 const usuariosEstado = {};
 
-const MENU_FAQ_TEXTO = `¿Tienes alguna otra duda o deseas consultar algo más? Selecciona una opción:\n\n*1.* ¿Cuáles son los precios o tarifas?\n*2.* ¿Cuánto se tarda un proyecto?\n*3.* ¿Qué debo entregar para empezar?\n*4.* ¿Hay garantías?\n*5.* Hablar directamente con un especialista (Humano)`;
+const MENU_FAQ_TEXTO = `¿Tienes alguna otra duda o deseas consultar algo más? Selecciona una opción:\n\n*1.* ¿Cuáles son los precios o tarifas?\n*2.* ¿Cuánto se tarda un proyecto?\n*3.* ¿Qué debo entregar para empezar?\n*4.* ¿Hay garantías?\n*5.* Hablar directamente con un especialista (Humano)\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)`;
 
 async function iniciarBot() {
     const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys');
@@ -57,7 +57,7 @@ async function iniciarBot() {
             if (textoLower === 'ariasbot') {
                 usuariosEstado[remitente] = { paso: 'MENU_PRINCIPAL', nombre: 'Usuario', correo: '' };
                 await sock.sendMessage(remitente, { 
-                    text: '🟢 ¡Hola de nuevo! El bot ha sido reactivado.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales' 
+                    text: '🟢 ¡Hola de nuevo! El bot ha sido reactivado.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                 });
             }
             return; // Ignora cualquier otro mensaje mientras esté pausado/apagado
@@ -67,7 +67,7 @@ async function iniciarBot() {
         if (!usuariosEstado[remitente]) {
             usuariosEstado[remitente] = { paso: 'ESPERANDO_NOMBRE', flujo: '' };
             await sock.sendMessage(remitente, { 
-                text: '🤖 *¡Bienvenido a AriasDeveloper!* Estamos aquí para ayudarte con todas las necesidades de Software y tecnología.\n\n¿Cuál es tu nombre?\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                text: '🤖 *¡Bienvenido a AriasDeveloper!* Estamos aquí para ayudarte con todas las necesidades de Software y tecnología.\n\n¿Cuál es tu nombre?\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
             });
             return;
         }
@@ -81,7 +81,7 @@ async function iniciarBot() {
                 estado.nombre = texto;
                 estado.paso = 'ESPERANDO_CORREO';
                 await sock.sendMessage(remitente, { 
-                    text: `Mucho gusto, *${estado.nombre}*.\n\n¿Cuál es tu correo electrónico?\n(🔴 Escribe ariasoff si quieres cerrar el Bot)` 
+                    text: `Mucho gusto, *${estado.nombre}*.\n\n¿Cuál es tu correo electrónico?\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)` 
                 });
                 break;
 
@@ -89,7 +89,7 @@ async function iniciarBot() {
                 estado.correo = texto;
                 estado.paso = 'MENU_PRINCIPAL';
                 await sock.sendMessage(remitente, { 
-                    text: `¡Gracias! Hemos registrado tu correo.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n(🔴 Escribe ariasoff si quieres cerrar el Bot)` 
+                    text: `¡Gracias! Hemos registrado tu correo.\n\n¿Cómo podemos dirigirte hoy? Responde con el número de tu opción:\n\n*1.* Catálogo Web\n*2.* Gestionar Clientes\n*3.* Otro / Consultas generales\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)` 
                 });
                 break;
 
@@ -100,7 +100,7 @@ async function iniciarBot() {
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else {
                     await sock.sendMessage(remitente, { 
-                        text: '⚠️ Por favor, responde con un número válido: *1*, *2* o *3*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                        text: '⚠️ Por favor, responde con un número válido: *1*, *2* o *3*.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                 }
                 break;
@@ -108,23 +108,23 @@ async function iniciarBot() {
             case 'MENU_FAQ':
                 if (texto === '1') {
                     await sock.sendMessage(remitente, { 
-                        text: '💰 Pueden variar un poco según las promociones actuales y algunos requerimientos específicos del cliente, aunque el promedio estándar ronda entre los *10-35 Usdt*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                        text: '💰 Pueden variar un poco según las promociones actuales y algunos requerimientos específicos del cliente, aunque el promedio estándar ronda entre los *10-35 Usdt*.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     // Envía la respuesta y de inmediato despliega el menú de nuevo sin pedir números previos
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '2') {
                     await sock.sendMessage(remitente, { 
-                        text: '⏱️ Todos los proyectos se gestionan bajo estricta planificación y se estima una duración de *7 días*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                        text: '⏱️ Todos los proyectos se gestionan bajo estricta planificación y se estima una duración de *7 días*.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '3') {
                     await sock.sendMessage(remitente, { 
-                        text: '📁 De tener imágenes, vídeos o audios alusivos a tu negocio o marca nos ayudaría muchísimo a crear el proyecto exactamente a tu estilo y huella, aunque estamos 100% dispuesto a ayudarte y ofrecerte nuestras habilidades de diseño y personalización.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                        text: '📁 De tener imágenes, vídeos o audios alusivos a tu negocio o marca nos ayudaría muchísimo a crear el proyecto exactamente a tu estilo y huella, aunque estamos 100% dispuesto a ayudarte y ofrecerte nuestras habilidades de diseño y personalización.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '4') {
                     await sock.sendMessage(remitente, { 
-                        text: '🛡️ Todos nuestros proyectos incluyen garantías y nos hacemos 100% responsables de su gestión, corrección de errores y su funcionamiento para su mayor comodidad.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                        text: '🛡️ Todos nuestros proyectos incluyen garantías y nos hacemos 100% responsables de su gestión, corrección de errores y su funcionamiento para su mayor comodidad.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                     await sock.sendMessage(remitente, { text: MENU_FAQ_TEXTO });
                 } else if (texto === '5') {
@@ -135,14 +135,14 @@ async function iniciarBot() {
                     });
                 } else {
                     await sock.sendMessage(remitente, { 
-                        text: '⚠️ Selecciona un número válido del *1* al *5*.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
+                        text: '⚠️ Selecciona un número válido del *1* al *5*.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' 
                     });
                 }
                 break;
 
             default:
                 estado.paso = 'MENU_PRINCIPAL';
-                await sock.sendMessage(remitente, { text: 'Escribe *1*, *2* o *3* para ver el menú principal.\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' });
+                await sock.sendMessage(remitente, { text: 'Escribe *1*, *2* o *3* para ver el menú principal.\n\n\n(🔴 Escribe ariasoff si quieres cerrar el Bot)' });
                 break;
         }
     });
